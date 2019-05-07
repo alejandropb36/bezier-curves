@@ -13,22 +13,26 @@ namespace bezier_curves
     public partial class MainForm : Form
     {
         int contador;
-        Point[] puntos;
-        Point l1, l2, l3;
-        Point l4, l5, l6;
-        Point l7;
+        Point[] points;
+        Point punto1, punto2, punto3;
+        Point punto4, punto5, punto6;
+        Point punto7, punto8, punto9;
         Pen pen;
 
         public MainForm()
         {
             contador = 0;
-            puntos = new Point[3];
-            l1 = new Point();
-            l2 = new Point();
-            l3 = new Point();
-            l4 = new Point();
-            l5 = new Point();
-            l6 = new Point();
+            points = new Point[3];
+            punto1 = new Point();
+            punto2 = new Point();
+            punto3 = new Point();
+            punto4 = new Point();
+            punto5 = new Point();
+            punto6 = new Point();
+            punto7 = new Point();
+            punto8 = new Point();
+            punto9 = new Point();
+            punto9 = new Point();
             pen = new Pen(Color.Black);
             InitializeComponent();
         }
@@ -52,7 +56,7 @@ namespace bezier_curves
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            puntos = new Point[Convert.ToInt32(comboBox1.Text)];
+            points = new Point[Convert.ToInt32(comboBox1.Text)];
         }
 
         private void ClearButton_Click(object sender, EventArgs e)
@@ -62,12 +66,12 @@ namespace bezier_curves
 
         private void WorkSpace_MouseClick(object sender, MouseEventArgs e)
         {
-            puntos[contador] = new Point(e.X, e.Y);
+            points[contador] = new Point(e.X, e.Y);
             contador++;
             WorkSpace.CreateGraphics().DrawEllipse(GetPen(Color.Black), e.X, e.Y, 3, 3);
             if (contador == Convert.ToInt32(comboBox1.Text))
             {
-                DibujarLineas(puntos, contador - 1);
+                DibujarLineas(points, contador - 1);
                 contador = 0;
             }
         }
@@ -81,172 +85,55 @@ namespace bezier_curves
             }
             else if (Convert.ToInt32(comboBox1.Text) == 4)
             {
-                CalcularCurvasGrado3(puntos, DistanciaMayor(puntos, numeroPuntos));
+                //CalcularCurvasGrado3(puntos, DistanciaMayor(puntos, numeroPuntos));
+            }
+            else if(Convert.ToInt32(comboBox1.Text) == 5)
+            {
+                //ClacularCurvasGrado4(puntos, DistanciaMayor(puntos, numeroPuntos));
             }
         }
 
-        Point GetPuntoCurva(Point[] conjuntoPuntos, double t, int np)
-        {
-            double ax, bx, cx;
-            double ay, by, cy;
-            Double tSquared, tCubed;
-            Point result = new Point();
-
-            cx = 3.0 * (conjuntoPuntos[1].X - conjuntoPuntos[0].X);
-            bx = 3.0 * (conjuntoPuntos[2].X - conjuntoPuntos[1].X) - cx;
-            ax = conjuntoPuntos[np].X - conjuntoPuntos[0].X - cx - bx;
-
-            cy = 3.0 * (conjuntoPuntos[1].Y - conjuntoPuntos[0].Y);
-            by = 3.0 * (conjuntoPuntos[2].Y - conjuntoPuntos[1].Y) - cy;
-            ay = conjuntoPuntos[np].Y - conjuntoPuntos[0].Y - cy - by;
-
-            tSquared = t * t;
-            tCubed = tSquared * t;
-
-            result.X = Convert.ToInt32((ax * tCubed) + (bx * tSquared) + (cx * t) + conjuntoPuntos[0].X);
-            result.Y = Convert.ToInt32((ay * tCubed) + (by * tSquared) + (cy * t) + conjuntoPuntos[0].Y);
-            WorkSpace.CreateGraphics().DrawLine(GetPen(Color.Yellow), (float)(conjuntoPuntos[0].X + (ax * tCubed)), (float)(conjuntoPuntos[0].Y + (ay * tCubed)), (float)(conjuntoPuntos[2].X), (float)(conjuntoPuntos[2].Y));
-
-            return result;
-        }
-
-        void CalcularCurvasGrado2(Point[] conjuntoPuntos, int numeroPuntos)
+        void CalcularCurvasGrado2(Point[] puntos, int numeroPuntos)
         {
             Point[] curva = new Point[numeroPuntos];
-            float t;
-            t = (float)1 / (float)(numeroPuntos - 1);
+            float tolerancia;
+            tolerancia = (float)1 / (float)(numeroPuntos - 1);
 
             for (int i = 0; i < numeroPuntos; i++)
             {
-                WorkSpace.CreateGraphics().DrawLine(GetPen(Color.White), l1.X, l1.Y, l2.X, l2.Y);
-                curva[i] = GetPuntoCurvaGrado2(conjuntoPuntos, i * t);
-                WorkSpace.CreateGraphics().DrawLines(GetPen(Color.Black), puntos);
-                DibujarCurvaActual(curva, i);
+                WorkSpace.CreateGraphics().DrawLine(GetPen(Color.White), punto1.X, punto1.Y, punto2.X, punto2.Y);
+                curva[i] = GetPuntoCurvaGrado2(puntos, (float)i * tolerancia);
+                WorkSpace.CreateGraphics().DrawLines(GetPen(Color.Black), points);
+                DibujarCurvaActual(curva, i, Color.Blue);
+
             }
         }
 
-        Point GetPuntoCurvaGrado2(Point[] conjuntoPuntos, double t)
+        Point GetPuntoCurvaGrado2(Point[] puntos, float tolerancia)
         {
             Point resultado = new Point();
-            int rx1, ry1, rx2, ry2;
+            int punto1X, punto1Y;
+            int punto2X, punto2Y;
 
-            rx1 = (int)((conjuntoPuntos[1].X - conjuntoPuntos[0].X) * t) + conjuntoPuntos[0].X;
-            ry1 = (int)((conjuntoPuntos[1].Y - conjuntoPuntos[0].Y) * t) + conjuntoPuntos[0].Y;
-            rx2 = (int)((conjuntoPuntos[2].X - conjuntoPuntos[1].X) * t) + conjuntoPuntos[1].X;
-            ry2 = (int)((conjuntoPuntos[2].Y - conjuntoPuntos[1].Y) * t) + conjuntoPuntos[1].Y;
-            resultado.X = (int)Math.Round(((rx2 - rx1) * t) + rx1);
-            resultado.Y = (int)Math.Round(((ry2 - ry1) * t) + ry1);
+            punto1X = (int)Math.Round((puntos[1].X - puntos[0].X) * tolerancia) + puntos[0].X;
+            punto1Y = (int)Math.Round((puntos[1].Y - puntos[0].Y) * tolerancia) + puntos[0].Y;
+            punto2X = (int)Math.Round((puntos[2].X - puntos[1].X) * tolerancia) + puntos[1].X;
+            punto2Y = (int)Math.Round((puntos[2].Y - puntos[1].Y) * tolerancia) + puntos[1].Y;
+            resultado.X = (int)Math.Round(((punto2X - punto1X) * tolerancia) + punto1X);
+            resultado.Y = (int)Math.Round(((punto2Y - punto1Y) * tolerancia) + punto1Y);
 
-            WorkSpace.CreateGraphics().DrawLine(GetPen(Color.Red), rx1, ry1, rx2, ry2);
-            l1 = new Point(rx1, ry1);
-            l2 = new Point(rx2, ry2);
+            WorkSpace.CreateGraphics().DrawLine(GetPen(Color.Red), punto1X, punto1Y, punto2X, punto2Y);
+            punto1 = new Point(punto1X, punto1Y);
+            punto2 = new Point(punto2X, punto2Y);
             return resultado;
         }
 
-        void DibujarCurvaActual(Point[] curva, int n)
+        void DibujarCurvaActual(Point[] curva, int n, Color color)
         {
             for (int i = 0; i < n; i++)
             {
-                WorkSpace.CreateGraphics().DrawRectangle(GetPen(Color.Blue), curva[i].X, curva[i].Y, 1, 1);
+                WorkSpace.CreateGraphics().DrawRectangle(GetPen(color), curva[i].X, curva[i].Y, 1, 1);
             }
-        }
-
-        void CalcularCurvasGrado3(Point[] conjuntoPuntos, int numeroPuntos)
-        {
-            Point[] curva = new Point[numeroPuntos];
-            float t;
-            t = (float)1 / (float)(numeroPuntos - 1);
-
-            for (int i = 0; i < numeroPuntos; i++)
-            {
-                WorkSpace.CreateGraphics().DrawLine(GetPen(Color.White), l1.X, l1.Y, l2.X, l2.Y);
-                WorkSpace.CreateGraphics().DrawLine(GetPen(Color.White), l2.X, l2.Y, l3.X, l3.Y);
-                WorkSpace.CreateGraphics().DrawLine(GetPen(Color.White), l4.X, l4.Y, l5.X, l5.Y);
-                curva[i] = GetPuntoCurvaGrado3(conjuntoPuntos, i * t);
-
-                WorkSpace.CreateGraphics().DrawLines(GetPen(Color.Black), puntos);
-                DibujarCurvaActual(curva, i);
-
-            }
-        }
-
-        Point GetPuntoCurvaGrado3(Point[] conjuntoPuntos, double t)
-        {
-            Point resultado = new Point();
-            int rx1, ry1, rx2, ry2, rx3, ry3, rx4, ry4, rx5, ry5;
-
-            rx1 = (int)((conjuntoPuntos[1].X - conjuntoPuntos[0].X) * t) + conjuntoPuntos[0].X;
-            ry1 = (int)((conjuntoPuntos[1].Y - conjuntoPuntos[0].Y) * t) + conjuntoPuntos[0].Y;
-            rx2 = (int)((conjuntoPuntos[2].X - conjuntoPuntos[1].X) * t) + conjuntoPuntos[1].X;
-            ry2 = (int)((conjuntoPuntos[2].Y - conjuntoPuntos[1].Y) * t) + conjuntoPuntos[1].Y;
-            rx3 = (int)((conjuntoPuntos[3].X - conjuntoPuntos[2].X) * t) + conjuntoPuntos[2].X;
-            ry3 = (int)((conjuntoPuntos[3].Y - conjuntoPuntos[2].Y) * t) + conjuntoPuntos[2].Y;
-            rx4 = (int)((rx2 - rx1) * t) + rx1;
-            ry4 = (int)((ry2 - ry1) * t) + ry1;
-            rx5 = (int)((rx3 - rx2) * t) + rx2;
-            ry5 = (int)((ry3 - ry2) * t) + ry2;
-
-            resultado.X = (int)Math.Round(((rx5 - rx4) * t) + rx4);
-            resultado.Y = (int)Math.Round(((ry5 - ry4) * t) + ry4);
-            WorkSpace.CreateGraphics().DrawLine(GetPen(Color.Green), rx1, ry1, rx2, ry2);
-            WorkSpace.CreateGraphics().DrawLine(GetPen(Color.Green), rx2, ry2, rx3, ry3);
-            WorkSpace.CreateGraphics().DrawLine(GetPen(Color.Blue), rx4, ry4, rx5, ry5);
-            l1 = new Point(rx1, ry1);
-            l2 = new Point(rx2, ry2);
-            l3 = new Point(rx3, ry3);
-            l4 = new Point(rx4, ry4);
-            l5 = new Point(rx5, ry5);
-
-            return resultado;
-        }
-
-        void CalcularCurvasGrado4(Point[] conjuntoPuntos, int numeroPuntos)
-        {
-            Point[] curva = new Point[numeroPuntos];
-            float t;
-            t = (float)1 / (float)(numeroPuntos - 1);
-
-            for (int i = 0; i < numeroPuntos; i++)
-            {
-                WorkSpace.CreateGraphics().DrawLine(GetPen(Color.White), l1.X, l1.Y, l2.X, l2.Y);
-                WorkSpace.CreateGraphics().DrawLine(GetPen(Color.White), l2.X, l2.Y, l3.X, l3.Y);
-                WorkSpace.CreateGraphics().DrawLine(GetPen(Color.White), l4.X, l4.Y, l5.X, l5.Y);
-                curva[i] = GetPuntoCurvaGrado4(conjuntoPuntos, i * t);
-
-                WorkSpace.CreateGraphics().DrawLines(GetPen(Color.Black), puntos);
-                DibujarCurvaActual(curva, i);
-
-            }
-        }
-
-        Point GetPuntoCurvaGrado4(Point[] conjuntoPuntos, double t)
-        {
-            Point resultado = new Point();
-            int rx1, ry1, rx2, ry2, rx3, ry3, rx4, ry4, rx5, ry5;
-
-            rx1 = (int)((conjuntoPuntos[1].X - conjuntoPuntos[0].X) * t) + conjuntoPuntos[0].X;
-            ry1 = (int)((conjuntoPuntos[1].Y - conjuntoPuntos[0].Y) * t) + conjuntoPuntos[0].Y;
-            rx2 = (int)((conjuntoPuntos[2].X - conjuntoPuntos[1].X) * t) + conjuntoPuntos[1].X;
-            ry2 = (int)((conjuntoPuntos[2].Y - conjuntoPuntos[1].Y) * t) + conjuntoPuntos[1].Y;
-            rx3 = (int)((conjuntoPuntos[3].X - conjuntoPuntos[2].X) * t) + conjuntoPuntos[2].X;
-            ry3 = (int)((conjuntoPuntos[3].Y - conjuntoPuntos[2].Y) * t) + conjuntoPuntos[2].Y;
-            rx4 = (int)((rx2 - rx1) * t) + rx1;
-            ry4 = (int)((ry2 - ry1) * t) + ry1;
-            rx5 = (int)((rx3 - rx2) * t) + rx2;
-            ry5 = (int)((ry3 - ry2) * t) + ry2;
-
-            resultado.X = (int)Math.Round(((rx5 - rx4) * t) + rx4);
-            resultado.Y = (int)Math.Round(((ry5 - ry4) * t) + ry4);
-            WorkSpace.CreateGraphics().DrawLine(GetPen(Color.Green), rx1, ry1, rx2, ry2);
-            WorkSpace.CreateGraphics().DrawLine(GetPen(Color.Green), rx2, ry2, rx3, ry3);
-            WorkSpace.CreateGraphics().DrawLine(GetPen(Color.Blue), rx4, ry4, rx5, ry5);
-            l1 = new Point(rx1, ry1);
-            l2 = new Point(rx2, ry2);
-            l3 = new Point(rx3, ry3);
-            l4 = new Point(rx4, ry4);
-            l5 = new Point(rx5, ry5);
-
-            return resultado;
         }
 
     }
