@@ -140,7 +140,6 @@ namespace bezier_curves
             {
                 WorkSpace.CreateGraphics().DrawLine(GetPen(Color.White), punto1, punto2);
                 WorkSpace.CreateGraphics().DrawLine(GetPen(Color.White), punto2, punto3);
-                WorkSpace.CreateGraphics().DrawLine(GetPen(Color.White), punto3, punto4);
                 WorkSpace.CreateGraphics().DrawLine(GetPen(Color.White), punto4, punto5);
 
                 curva[i] = GetPuntoCurvaGrado3(puntos, (float)i * tolerancia);
@@ -184,7 +183,7 @@ namespace bezier_curves
                 WorkSpace.CreateGraphics().DrawLine(GetPen(Color.White), punto3, punto4);
                 WorkSpace.CreateGraphics().DrawLine(GetPen(Color.White), punto5, punto6);
                 WorkSpace.CreateGraphics().DrawLine(GetPen(Color.White), punto6, punto7);
-                WorkSpace.CreateGraphics().DrawLine(GetPen(Color.White), punto7, punto8);
+
                 WorkSpace.CreateGraphics().DrawLine(GetPen(Color.White), punto8, punto9);
 
                 curva[i] = GetPuntoCurvaGrado4(puntos, (float)i * tolerancia);
@@ -200,24 +199,22 @@ namespace bezier_curves
             punto1 = GetPunto(puntos[0], puntos[1], tolerancia);
             punto2 = GetPunto(puntos[1], puntos[2], tolerancia);
             punto3 = GetPunto(puntos[2], puntos[3], tolerancia);
-            punto4 = GetPunto(punto1, punto2, tolerancia);
-            punto5 = GetPunto(punto2, punto3, tolerancia);
-            punto6 = GetPunto(punto3, punto4, tolerancia);
-            punto7 = GetPunto(punto4, punto5, tolerancia);
+            punto4 = GetPunto(puntos[3], puntos[4], tolerancia);
+            punto5 = GetPunto(punto1, punto2, tolerancia);
+            punto6 = GetPunto(punto2, punto3, tolerancia);
+            punto7 = GetPunto(punto3, punto4, tolerancia);
             punto8 = GetPunto(punto5, punto6, tolerancia);
             punto9 = GetPunto(punto6, punto7, tolerancia);
 
             /* Punto en la curva*/
             resultado = GetPunto(punto8, punto9, tolerancia);
 
-            WorkSpace.CreateGraphics().DrawLine(GetPen(Color.Green), punto1, punto2);
-            WorkSpace.CreateGraphics().DrawLine(GetPen(Color.Green), punto2, punto3);
-            WorkSpace.CreateGraphics().DrawLine(GetPen(Color.Blue), punto3, punto4);
-            WorkSpace.CreateGraphics().DrawLine(GetPen(Color.Blue), punto4, punto5);
+            WorkSpace.CreateGraphics().DrawLine(GetPen(Color.Yellow), punto1, punto2);
+            WorkSpace.CreateGraphics().DrawLine(GetPen(Color.YellowGreen), punto2, punto3);
+            WorkSpace.CreateGraphics().DrawLine(GetPen(Color.Green), punto3, punto4);
             WorkSpace.CreateGraphics().DrawLine(GetPen(Color.Pink), punto5, punto6);
             WorkSpace.CreateGraphics().DrawLine(GetPen(Color.Pink), punto6, punto7);
-            WorkSpace.CreateGraphics().DrawLine(GetPen(Color.Pink), punto7, punto8);
-            WorkSpace.CreateGraphics().DrawLine(GetPen(Color.Red), punto8, punto9);
+            WorkSpace.CreateGraphics().DrawLine(GetPen(Color.Blue), punto8, punto9);
 
             return resultado;
         }
